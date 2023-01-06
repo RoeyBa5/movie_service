@@ -2,20 +2,20 @@ from typing import List
 
 from pymongo import MongoClient
 
+from api.db.config import MongoConfig
 from api.models.base import Movie
 
-COLLECTION_NAME = 'favorites'
-
-DB_NAME = 'movies'
-
 DB_HOST = "mongodb://localhost:27017/"
+DB_NAME = 'movies'
+COLLECTION_NAME = 'favorites'
+mongo_config = MongoConfig(host=DB_HOST, db_name=DB_NAME, collection_name=COLLECTION_NAME)
 
 
 class DBManager:
-    def __init__(self, client: MongoClient = MongoClient(DB_HOST)):
+    def __init__(self, client: MongoClient = MongoClient(mongo_config.host)):
         self._client = client
-        self._db = self._client[DB_NAME]
-        self._collection = self._db[COLLECTION_NAME]
+        self._db = self._client[mongo_config.db_name]
+        self._collection = self._db[mongo_config.collection_name]
 
     def get_all(self) -> List[Movie]:
         movies = [res for res in self._collection.find()]
